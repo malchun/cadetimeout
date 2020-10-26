@@ -1,0 +1,10 @@
+#gradle
+gradle/
+.gradle/
+gradlew*
+
+#idea
+.idea/
+
+#java
+*/build/
