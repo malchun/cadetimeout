@@ -1,5 +1,6 @@
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     compile group: 'com.uber.cadence', name: 'cadence-client', version: '2.7.8'
 
