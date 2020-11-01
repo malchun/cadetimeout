@@ -1,7 +1,7 @@
 server.port: 9091
 spring:
   datasource:
-    url: "jdbc:postgresql://localhost/questionmarks"
+    url: "jdbc:postgresql://localhost:5432/cadetimeout"
     username: cadetimeout
     password: cadetimeout
     driver-class-name: org.postgresql.Driver
@@ -9,3 +9,6 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL9Dialect
     properties.hibernate.temp.use_jdbc_metadata_defaults: false
+
+  liquibase:
+    changeLog: "classpath:/db/changelog/changelog-master.yaml"

@@ -14,7 +14,6 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(insertable = false, updatable = false)
     private LocalDateTime created;
 

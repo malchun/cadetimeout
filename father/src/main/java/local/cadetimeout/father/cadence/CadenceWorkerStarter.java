@@ -4,7 +4,7 @@ import com.uber.cadence.*;
 import com.uber.cadence.serviceclient.IWorkflowService;
 import com.uber.cadence.serviceclient.WorkflowServiceTChannel;
 import com.uber.cadence.worker.Worker;
-import local.cadetimeout.father.workflow.ParentWorkflowImpl;
+import local.cadetimeout.father.cadence.workflow.ParentWorkflowImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
@@ -22,9 +22,7 @@ public class CadenceWorkerStarter implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.debug("Starting worker");
         registerDomain();
-        Worker.Factory factory = new Worker.Factory(cadenceProperties.getDomain());
-        Worker worker = factory.newWorker(cadenceProperties.getTaskList());
-        worker.registerWorkflowImplementationTypes(ParentWorkflowImpl.class);
+        Worker.Factory factory = buildWorkerFacory();
         factory.start();
     }
 
@@ -45,5 +43,12 @@ public class CadenceWorkerStarter implements CommandLineRunner {
         } catch (TException error) {
             log.error(error.getStackTrace().toString());
         }
+    }
+
+    private Worker.Factory buildWorkerFacory() {
+        Worker.Factory factory = new Worker.Factory(cadenceProperties.getDomain());
+        Worker worker = factory.newWorker(cadenceProperties.getTaskList());
+        worker.registerWorkflowImplementationTypes(ParentWorkflowImpl.class);
+        return factory;
     }
 }

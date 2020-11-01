@@ -5,7 +5,11 @@ import com.uber.cadence.RegisterDomainRequest;
 import com.uber.cadence.serviceclient.IWorkflowService;
 import com.uber.cadence.serviceclient.WorkflowServiceTChannel;
 import com.uber.cadence.worker.Worker;
-import local.cadetimeout.child.workflow.ChildWorkflowImpl;
+import local.cadetimeout.child.cadence.activity.SaveEventActivity;
+import local.cadetimeout.child.cadence.activity.SaveEventActivityImpl;
+import local.cadetimeout.child.cadence.workflow.ChildWorkflow;
+import local.cadetimeout.child.cadence.workflow.ChildWorkflowImpl;
+import local.cadetimeout.child.domain.EventRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TException;
@@ -18,21 +22,20 @@ import org.springframework.stereotype.Service;
 public class CadenceWorkerStarter implements CommandLineRunner {
 
     private CadenceProperties cadenceProperties;
+    private EventRepository eventRepository;
 
     @Override
     public void run(String... args) throws Exception {
         log.debug("Starting worker");
         registerDomain();
-        Worker.Factory factory = new Worker.Factory(cadenceProperties.getDomain());
-        Worker worker = factory.newWorker(cadenceProperties.getTaskList());
-        worker.registerWorkflowImplementationTypes(ChildWorkflowImpl.class);
+        Worker.Factory factory = buildWorkerFacory();
         factory.start();
     }
 
     private void registerDomain() {
         log.debug("Registering domain");
         IWorkflowService cadenceService = new WorkflowServiceTChannel(
-                                                cadenceProperties.getHost(), cadenceProperties.getPort());
+                cadenceProperties.getHost(), cadenceProperties.getPort());
         RegisterDomainRequest request = new RegisterDomainRequest();
         request.setDescription(cadenceProperties.getDescription());
         request.setEmitMetric(cadenceProperties.getEmitMetric());
@@ -46,5 +49,13 @@ public class CadenceWorkerStarter implements CommandLineRunner {
         } catch (TException error) {
             log.error(error.getStackTrace().toString());
         }
+    }
+
+    private Worker.Factory buildWorkerFacory() {
+        Worker.Factory factory = new Worker.Factory(cadenceProperties.getDomain());
+        Worker worker = factory.newWorker(cadenceProperties.getTaskList());
+        worker.registerWorkflowImplementationTypes(ChildWorkflowImpl.class);
+        worker.registerActivitiesImplementations(new SaveEventActivityImpl(eventRepository));
+        return factory;
     }
 }

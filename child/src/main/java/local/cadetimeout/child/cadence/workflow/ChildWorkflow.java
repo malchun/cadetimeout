@@ -1,4 +1,4 @@
-package local.cadetimeout.child.workflow;
+package local.cadetimeout.child.cadence.workflow;
 
 import com.uber.cadence.workflow.WorkflowMethod;
 

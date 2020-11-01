@@ -1,4 +1,4 @@
-package local.cadetimeout.father.workflow;
+package local.cadetimeout.father.cadence.workflow;
 
 import local.cadetimeout.father.cadence.CadenceStarterService;
 import local.cadetimeout.father.util.BeanProvider;

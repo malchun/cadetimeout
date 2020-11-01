@@ -3,7 +3,7 @@ package local.cadetimeout.child.cadence;
 import com.uber.cadence.WorkflowExecution;
 import com.uber.cadence.client.WorkflowClient;
 import com.uber.cadence.client.WorkflowOptions;
-import local.cadetimeout.child.workflow.ChildWorkflow;
+import local.cadetimeout.child.cadence.workflow.ChildWorkflow;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
