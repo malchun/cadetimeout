@@ -6,6 +6,8 @@ import local.cadetimeout.child.domain.Event;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.Duration;
+
 @Slf4j
 public class ChildWorkflowImpl implements ChildWorkflow {
 
@@ -15,8 +17,8 @@ public class ChildWorkflowImpl implements ChildWorkflow {
     @Override
     public String process(String s) {
         log.info(String.format("I'm child workflow processing %s", s));
-        //log.info("Sleeping 10 sec");
-        //Thread.sleep(10000);
+        log.info("Sleeping 10 sec");
+        Workflow.sleep(Duration.ofSeconds(10));
         log.info("Awake! Now saving event!");
         saveEventActivity.saveEvent(buildEvent(s));
         return String.format("%s done!", s);

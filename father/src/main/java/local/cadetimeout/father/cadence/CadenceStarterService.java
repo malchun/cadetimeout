@@ -53,4 +53,16 @@ public class CadenceStarterService {
         String result = w.process(id);
         return String.format("Yes, my boy! It's %s", result);
     }
+
+    public String startdWorkflowOfChild(String id) {
+        WorkflowOptions wo = new WorkflowOptions.Builder()
+                .setTaskList("CHILD_TASK_LIST")
+                .setWorkflowId(String.format("parent-%s", id))
+                .setExecutionStartToCloseTimeout(Duration.ofSeconds(5))
+                .build();
+        ChildWorkflow w = workflowClient.newWorkflowStub(ChildWorkflow.class, wo);
+        WorkflowExecution we = WorkflowClient.start(w::process, id);
+        log.info(String.format("Started parent workflow %s", we.getRunId()));
+        return "Yes!";
+    }
 }

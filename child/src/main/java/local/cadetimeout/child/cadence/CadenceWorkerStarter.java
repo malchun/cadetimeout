@@ -2,11 +2,13 @@ package local.cadetimeout.child.cadence;
 
 import com.uber.cadence.DomainAlreadyExistsError;
 import com.uber.cadence.RegisterDomainRequest;
+import com.uber.cadence.internal.worker.PollerOptions;
 import com.uber.cadence.serviceclient.IWorkflowService;
 import com.uber.cadence.serviceclient.WorkflowServiceTChannel;
 import com.uber.cadence.worker.Worker;
 import local.cadetimeout.child.cadence.activity.SaveEventActivity;
 import local.cadetimeout.child.cadence.activity.SaveEventActivityImpl;
+import local.cadetimeout.child.cadence.exceptions.UncaughtExceptionHandler;
 import local.cadetimeout.child.cadence.workflow.ChildWorkflow;
 import local.cadetimeout.child.cadence.workflow.ChildWorkflowImpl;
 import local.cadetimeout.child.domain.EventRepository;
@@ -52,7 +54,10 @@ public class CadenceWorkerStarter implements CommandLineRunner {
     }
 
     private Worker.Factory buildWorkerFacory() {
-        Worker.Factory factory = new Worker.Factory(cadenceProperties.getDomain());
+        Worker.FactoryOptions.Builder builder = new Worker.FactoryOptions.Builder();
+        builder.setStickyWorkflowPollerOptions(new PollerOptions.Builder().
+                                                setUncaughtExceptionHandler(new UncaughtExceptionHandler()).build());
+        Worker.Factory factory = new Worker.Factory(cadenceProperties.getDomain(), builder.build());
         Worker worker = factory.newWorker(cadenceProperties.getTaskList());
         worker.registerWorkflowImplementationTypes(ChildWorkflowImpl.class);
         worker.registerActivitiesImplementations(new SaveEventActivityImpl(eventRepository));

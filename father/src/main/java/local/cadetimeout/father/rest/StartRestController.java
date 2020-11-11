@@ -16,4 +16,9 @@ public class StartRestController {
     public String start(@PathVariable String id) {
         return cadenceStarterService.startWorkflow(id);
     }
+
+    @GetMapping("start_child/{id}")
+    public String startChild(@PathVariable String id) {
+        return cadenceStarterService.startdWorkflowOfChild(id);
+    }
 }

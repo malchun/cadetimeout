@@ -30,7 +30,7 @@ public class CadenceStarterService {
         WorkflowOptions wo = new WorkflowOptions.Builder()
                                         .setTaskList(cadenceProperties.getTaskList())
                                         .setWorkflowId(String.format("child-%s", id))
-                                        .setExecutionStartToCloseTimeout(Duration.ofSeconds(20))
+                                        .setExecutionStartToCloseTimeout(Duration.ofSeconds(10))
                                         .build();
         ChildWorkflow w = workflowClient.newWorkflowStub(ChildWorkflow.class, wo);
         WorkflowExecution we = WorkflowClient.start(w::process, id);
